@@ -14,7 +14,8 @@ curl -fsSL --retry 3 -o "$TMP" "$URL"
 mkdir -p "$(dirname "$OUT")"
 openssl enc -d -aes-256-cbc -pbkdf2 -in "$TMP" -out "$OUT" -pass env:APP_FILE_PASSPHRASE
 case "$OUT" in
-  *.zip) unzip -q -o "$OUT" -d "$(dirname "$OUT")" ;;
+  # python's zipfile reads UTF-8 file names correctly; macOS unzip 6.0 does not
+  *.zip) python3 -c 'import sys,zipfile; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])' "$OUT" "$(dirname "$OUT")" ;;
   *.tgz|*.tar.gz) tar -xzf "$OUT" -C "$(dirname "$OUT")" ;;
 esac
 echo "Decrypted $ASSET"
