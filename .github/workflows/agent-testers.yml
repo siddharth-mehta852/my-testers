@@ -155,6 +155,7 @@ jobs:
           BUILD_ARGS: ${{ inputs.build_args }}
           BUILD_ARGS_SECRET: ${{ secrets.BUILD_ARGS }}
           ARTIFACT: ${{ inputs.apk_path }}
+          APP_FILE_PASSPHRASE: ${{ secrets.APP_FILE_PASSPHRASE }}   # decrypts a prebuilt app kept encrypted in a release
         run: bash scripts/build/android.sh "$APP_DIR" "${{ inputs.framework }}"
       # Public: which source was built and the hash of the APK, nothing from inside it
       - name: What was built
@@ -215,6 +216,7 @@ jobs:
           BUILD_ARGS_SECRET: ${{ secrets.BUILD_ARGS }}
           ARTIFACT: ${{ inputs.ios_app_path }}
           IOS_SCHEME: ${{ vars.IOS_SCHEME }}   # optional repo variable, for projects with several schemes
+          APP_FILE_PASSPHRASE: ${{ secrets.APP_FILE_PASSPHRASE }}   # decrypts a prebuilt app kept encrypted in a release
         run: bash scripts/build/ios.sh "$APP_DIR" "${{ inputs.framework }}"
       - name: Encrypt .app
         env: { ARTIFACT_PASSPHRASE: "${{ secrets.ARTIFACT_PASSPHRASE }}" }
